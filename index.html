@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Dashboard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff9fb;color:#222;min-height:100vh;padding:1.5rem}
+.wrap{max-width:900px;margin:0 auto}
+h1{font-size:20px;font-weight:600;color:#ED0C7D;margin-bottom:1.5rem;display:flex;align-items:center;gap:8px}
+.sec-title{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.6rem}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:1.25rem}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.25rem}
+@media(max-width:700px){.grid4{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid #f0e0ea;border-radius:14px;padding:1rem 1.25rem}
+.metric{border-radius:10px;padding:1rem;text-align:center}
+.m-label{font-size:11px;margin-bottom:5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:4px}
+.m-val{font-size:26px;font-weight:700}
+.m-sub{font-size:11px;margin-top:3px;opacity:.8}
+.card-title{font-size:13px;font-weight:600;color:#888;margin-bottom:.875rem;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.editable{cursor:pointer;border-bottom:1px dashed transparent;transition:border-color .15s}
+.editable:hover{border-bottom-color:#ED0C7D}
+.inline-edit{background:transparent;border:none;border-bottom:1.5px dashed #ED0C7D;font-size:inherit;font-weight:inherit;color:inherit;font-family:inherit;outline:none;padding:0;min-width:20px}
+.task-list{display:flex;flex-direction:column;gap:6px}
+.task-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;background:#fff9fb;font-size:13px;border:1px solid #fce8f3}
+.task-item.done{opacity:.5;text-decoration:line-through}
+.task-check{width:18px;height:18px;border-radius:50%;border:1.5px solid #ddd;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;transition:all .15s;cursor:pointer}
+.task-check.ok{border-color:#ED0C7D;background:#ED0C7D;color:#fff}
+.tag{font-size:10px;padding:2px 7px;border-radius:20px;flex-shrink:0;font-weight:600}
+.task-mins{font-size:10px;color:#aaa;flex-shrink:0}
+.task-actions{display:flex;align-items:center;gap:4px;margin-left:auto}
+.add-row{display:flex;gap:7px;margin-top:8px}
+.add-row input{flex:1;font-size:13px;padding:7px 10px;border-radius:8px;border:1px solid #f0e0ea;outline:none}
+.add-row input:focus{border-color:#ED0C7D}
+.add-row button{font-size:13px;padding:7px 14px;border-radius:8px;border:1px solid #ED0C7D;color:#ED0C7D;background:transparent;cursor:pointer;white-space:nowrap}
+.p-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+.p-bar-bg{height:7px;background:#f5e6f0;border-radius:4px;overflow:hidden}
+.p-bar{height:7px;border-radius:4px;transition:width .5s}
+.prog-section{display:flex;flex-direction:column;gap:8px}
+.tiempo-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #fce8f3}
+.tiempo-row:last-child{border-bottom:none}
+.t-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.t-name{font-size:13px;flex:1}
+.t-h{font-size:13px;font-weight:600}
+.t-pct{font-size:11px;color:#aaa;min-width:30px;text-align:right}
+.pom-wrap{display:flex;align-items:center;gap:1rem}
+.pom-ring{width:72px;height:72px;flex-shrink:0}
+.pom-time{font-size:20px;font-weight:700}
+.pom-mode{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600;display:inline-block;margin-bottom:2px}
+.pom-btns{display:flex;gap:6px;margin-top:4px}
+.pom-btns button{font-size:12px;padding:4px 10px;border-radius:8px;border:1px solid #ED0C7D;color:#ED0C7D;background:transparent;cursor:pointer}
+.pal-strip{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.5rem}
+.pal-sw{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s,border-color .15s}
+.pal-sw:hover{transform:scale(1.1)}
+.pal-sw.active{border-color:#222;transform:scale(1.13)}
+.tabs{display:flex;margin-bottom:.85rem;border:1px solid #f0e0ea;border-radius:8px;overflow:hidden}
+.tab{flex:1;text-align:center;font-size:12px;padding:5px 0;cursor:pointer;color:#aaa;background:transparent;border:none;transition:background .15s}
+.tab.active{background:#FE9BD4;color:#7A0040;font-weight:600}
+.chart-wrap{width:100%}
+.legend-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:.5rem}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:#888}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.wf-step{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:10px;margin-bottom:4px}
+.wf-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.wf-body{flex:1}
+.wf-title{font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.wf-acts{font-size:11px;color:#888;margin-top:2px;line-height:1.5}
+.wf-badge{font-size:10px;padding:1px 7px;border-radius:20px;font-weight:600;white-space:nowrap}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:50;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border:1px solid #f0e0ea;border-radius:14px;padding:1.25rem;width:320px;max-height:80vh;overflow-y:auto}
+.modal h3{font-size:14px;font-weight:600;margin-bottom:1rem}
+.field{margin-bottom:.7rem}
+.field label{font-size:12px;color:#888;display:block;margin-bottom:3px}
+.field input,.field select,.field textarea{width:100%;font-size:13px;padding:7px 10px;border-radius:8px;border:1px solid #f0e0ea;outline:none;font-family:inherit}
+.field input:focus,.field textarea:focus{border-color:#ED0C7D}
+.field textarea{height:60px;resize:vertical}
+.mbtns{display:flex;gap:8px;margin-top:1rem;justify-content:flex-end}
+.mbtns button{font-size:13px;padding:6px 15px;border-radius:8px;cursor:pointer}
+.btn-s{background:#ED0C7D;color:#fff;border:none;font-weight:600}
+.btn-c{background:transparent;color:#888;border:1px solid #ddd}
+.toast{position:fixed;bottom:20px;right:20px;background:#23DBCD;color:#004D40;font-size:13px;font-weight:600;padding:10px 16px;border-radius:10px;opacity:0;transition:opacity .3s;z-index:60;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1><span style="font-size:22px">🌸</span> My Dashboard</h1>
+
+<div class="card" style="margin-bottom:1.25rem">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem">
+    <div class="sec-title" style="margin-bottom:0">Paleta de colores</div>
+    <span style="font-size:11px;color:#aaa" id="pal-cur-name">Flamingo pink</span>
+  </div>
+  <div class="pal-strip">
+    <div class="pal-sw active" style="background:#ED0C7D" onclick="applyPal(0)" title="Flamingo pink"></div>
+    <div class="pal-sw" style="background:#F154B0" onclick="applyPal(1)" title="Barbie girlz"></div>
+    <div class="pal-sw" style="background:#FE9BD4" onclick="applyPal(2)" title="Girly pop"></div>
+    <div class="pal-sw" style="background:#FFE3F4" onclick="applyPal(3)" title="Daydream"></div>
+    <div class="pal-sw" style="background:#FE9D18" onclick="applyPal(4)" title="Dunedin orange"></div>
+    <div class="pal-sw" style="background:#FFE2CF" onclick="applyPal(5)" title="Creamsicle"></div>
+    <div class="pal-sw" style="background:#23DBCD" onclick="applyPal(6)" title="Gulfwater"></div>
+    <div class="pal-sw" style="background:#B7EDE4" onclick="applyPal(7)" title="Salt air"></div>
+    <div class="pal-sw" style="background:#00897C" onclick="applyPal(8)" title="High tide"></div>
+  </div>
+</div>
+
+<div class="grid4">
+  <div class="metric" style="background:#FFE3F4"><div class="m-label" style="color:#A3005A">✓ <span class="editable" onclick="inlineEdit(this)">Completadas</span></div><div class="m-val" style="color:#ED0C7D"><span id="mv0">0</span></div><div class="m-sub" style="color:#C2006E"><span id="ms0">de 10 actividades</span></div></div>
+  <div class="metric" style="background:#FFE2CF"><div class="m-label" style="color:#8B4000">⏱ <span class="editable" onclick="inlineEdit(this)">Tiempo total</span></div><div class="m-val" style="color:#FE9D18"><span id="mv1">0 h</span></div><div class="m-sub" style="color:#A05000"><span class="editable" onclick="inlineEdit(this)">meta: 8 h</span></div></div>
+  <div class="metric" style="background:#B7EDE4"><div class="m-label" style="color:#005048">📊 <span class="editable" onclick="inlineEdit(this)">Productividad</span></div><div class="m-val" style="color:#00897C"><span id="mv2">0%</span></div><div class="m-sub" style="color:#006B60"><span class="editable" onclick="inlineEdit(this)">actividades listas</span></div></div>
+  <div class="metric" style="background:#FE9BD4"><div class="m-label" style="color:#7A0040">🔥 <span class="editable" onclick="inlineEdit(this)">Racha activa</span></div><div class="m-val" style="color:#ED0C7D"><span class="editable" id="mv3" onclick="inlineEdit(this)">4</span></div><div class="m-sub" style="color:#A3005A"><span class="editable" onclick="inlineEdit(this)">días seguidos</span></div></div>
+</div>
+
+<div class="grid2">
+  <div class="card">
+    <div class="card-title">📋 <span class="editable" onclick="inlineEdit(this)">Actividades del día</span></div>
+    <div class="task-list" id="task-list">
+      <div class="task-item" data-done="0" data-mins="15" data-cat="comunicacion"><div class="task-check" onclick="toggle(this.parentElement)"></div><span class="editable" onclick="inlineEdit(this)">Email checking</span><span class="task-mins editable" onclick="inlineEdit(this)">15 min</span><div class="task-actions"><span class="tag" style="background:#FFE3F4;color:#A3005A">comunicación</span></div></div>
+      <div class="task-item" data-done="0" data-mins="15" data-cat="comunicacion"><div class="task-check" onclick="toggle(this.parentElement)"></div><span class="editable" onclick="inlineEdit(this)">Slack and channels review</span><span class="task-mins editable" onclick="inlineEdit(this)">15 min</span><div class="task-actions"><span class="tag" style="background:#FFE3F4;color:#A3005A">comunicación</span></div></div>
+      <div class="task-item" data-done="0" data-mins="20" data-cat="operaciones"><div class="task-check" onclick="toggle(this.parentElement)"></div><span class="editable" onclick="inlineEdit(this)">Invoice making</span><span class="task-mins editable" onclick="inlineEdit(this)">20 min</span><div class="task-actions"><span class="tag" style="background:#FE9BD4;color:#7A0040">operaciones</span></div></div>
+      <div class="task-item" data-done="0" data-mins="20" data-cat="analisis"><div class="task-check" onclick="toggle(this.parentElement)"></div><span class="editable" onclick="inlineEdit(this)">Updating info on Airtable</span><span class="task-mins editable" onclick="inlineEdit(this)">20 min</span><div class="task-actions"><span class="tag" style="background:#FFE2CF;color:#8B4000">análisis</span></div></div>
+      <div class="task-item" data-done="0" data-mins="20" data-cat="analisis"><div class="task-check" onclick="toggle(this.parentElement)"></div><span class="editable" onclick="inlineEdit(this)">Area Analysis</span><span class="task-mins editable" onclick="inlineEdit(this)">20 min</span><div class="task-actions"><span class="tag" style="background:#FFE2CF;color:#8B4000">análisis</span></div></div>
+      <div class="task-item" data-done="0" data-mins="45" data-cat="operaciones"><div class="task-check" onclick="toggle(this.parentElement)"></div><span class="editable" onclick="inlineEdit(this)">Leading and Quoting (Command center)</span><span class="task-mins editable" onclick="inlineEdit(this)">45 min</span><div class="task-actions"><span class="tag" style="background:#FE9BD4;color:#7A0040">operaciones</span></div></div>
+      <div class="task-item" data-done="0" data-mins="30" data-cat="operaciones"><div class="task-check" onclick="toggle(this.parentElement)"></div><span class="editable" onclick="inlineEdit(this)">Quoting (Panda)</span><span class="task-mins editable" onclick="inlineEdit(this)">30 min</span><div class="task-actions"><span class="tag" style="background:#FE9BD4;color:#7A0040">operaciones</span></div></div>
+      <div class="task-item" data-done="0" data-mins="30" data-cat="logistica"><div class="task-check" onclick="toggle(this.parentElement)"></div><span class="editable" onclick="inlineEdit(this)">Deliveries</span><span class="task-mins editable" onclick="inlineEdit(this)">30 min</span><div class="task-actions"><span class="tag" style="background:#E1BEE7;color:#4A148C">logística</span></div></div>
+      <div class="task-item" data-done="0" data-mins="40" data-cat="clientes"><div class="task-check" onclick="toggle(this.parentElement)"></div><span class="editable" onclick="inlineEdit(this)">Customer Excellence</span><span class="task-mins editable" onclick="inlineEdit(this)">40 min</span><div class="task-actions"><span class="tag" style="background:#B7EDE4;color:#005048">clientes</span></div></div>
+      <div class="task-item" data-done="0" data-mins="25" data-cat="clientes"><div class="task-check" onclick="toggle(this.parentElement)"></div><span class="editable" onclick="inlineEdit(this)">Follow Up with clients</span><span class="task-mins editable" onclick="inlineEdit(this)">25 min</span><div class="task-actions"><span class="tag" style="background:#B7EDE4;color:#005048">clientes</span></div></div>
+    </div>
+    <div class="add-row">
+      <input id="new-task" placeholder="Nueva actividad..." onkeydown="if(event.key==='Enter')addTask()">
+      <button onclick="addTask()">+ Agregar</button>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div class="card">
+      <div class="card-title">🗺 Workflow del día</div>
+      <div class="wf-step" style="background:#FFF5F8"><div class="wf-num" style="background:#FFE3F4;color:#A3005A">1</div><div class="wf-body"><div class="wf-title">Setup & Admin <span class="wf-badge" style="background:#FFE3F4;color:#A3005A">8–11 am</span></div><div class="wf-acts">Email · Slack · Invoices · Airtable · revisar leads/quotes pendientes de ayer</div></div></div>
+      <div class="wf-step" style="background:#FFE3F4"><div class="wf-num" style="background:#ED0C7D;color:#fff">!</div><div class="wf-body"><div class="wf-title" style="color:#A3005A">Punto de activación <span class="wf-badge" style="background:#ED0C7D;color:#fff">11 am</span></div><div class="wf-acts" style="color:#A3005A">El ritmo sube — llegan los primeros leads y clientes responden</div></div></div>
+      <div class="wf-step" style="background:#FFF2CF"><div class="wf-num" style="background:#FFE2CF;color:#8B4000">2</div><div class="wf-body"><div class="wf-title">Análisis → Operaciones <span class="wf-badge" style="background:#FFE2CF;color:#8B4000">11 am–1 pm</span></div><div class="wf-acts">Area Analysis primero — alimenta los quotes · Leading & Quoting · Quoting (Panda)</div></div></div>
+      <div class="wf-step" style="background:#F9F5FF"><div class="wf-num" style="background:#E1BEE7;color:#4A148C">3</div><div class="wf-body"><div class="wf-title">Pausa + Logística <span class="wf-badge" style="background:#E1BEE7;color:#4A148C">1–2 pm</span></div><div class="wf-acts">Deliveries · confirmar entregas</div></div></div>
+      <div class="wf-step" style="background:#FFF0F7"><div class="wf-num" style="background:#ED0C7D;color:#fff">🔥</div><div class="wf-body"><div class="wf-title" style="color:#7A0040">Modo caos productivo <span class="wf-badge" style="background:#ED0C7D;color:#fff">2–5 pm</span></div><div class="wf-acts" style="color:#A3005A">Customer Excellence · Follow Up · Quoting — fluir con lo que llegue</div></div></div>
+      <div class="wf-step" style="background:#F0FDFB"><div class="wf-num" style="background:#B7EDE4;color:#005048">4</div><div class="wf-body"><div class="wf-title">Cierre del día <span class="wf-badge" style="background:#B7EDE4;color:#005048">5–6 pm</span></div><div class="wf-acts">Email · Slack · Airtable · anotar pendientes para mañana</div></div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🍅 <span class="editable" onclick="inlineEdit(this)">Pomodoro</span> <span style="cursor:pointer;opacity:.4;font-size:12px" onclick="openModal('pomodoro')">✏️</span></div>
+      <div class="pom-wrap">
+        <svg class="pom-ring" viewBox="0 0 72 72">
+          <circle cx="36" cy="36" r="30" fill="none" stroke="#FFE3F4" stroke-width="7"/>
+          <circle id="pom-arc" cx="36" cy="36" r="30" fill="none" stroke="#ED0C7D" stroke-width="7" stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="0" transform="rotate(-90 36 36)"/>
+        </svg>
+        <div style="display:flex;flex-direction:column;gap:6px;flex:1">
+          <span class="pom-mode" id="pom-badge" style="background:#FFE3F4;color:#A3005A">Trabajo</span>
+          <div class="pom-time" id="pom-display">25:00</div>
+          <div style="font-size:11px;color:#aaa" id="pom-sess">Sesión 1 de 4</div>
+          <div class="pom-btns">
+            <button id="pom-btn" onclick="pomToggle()">▶ Iniciar</button>
+            <button onclick="pomReset()">↺</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⏰ <span class="editable" onclick="inlineEdit(this)">Tiempo por grupo</span> <span style="cursor:pointer;opacity:.4;font-size:12px" onclick="openModal('tiempo')">✏️</span></div>
+      <div id="tiempo-list">
+        <div class="tiempo-row"><div class="t-dot" style="background:#ED0C7D"></div><span class="t-name editable" onclick="inlineEdit(this)">Operaciones</span><span class="t-h" id="th0">1.5 h</span><span class="t-pct" id="tp0">40%</span></div>
+        <div class="tiempo-row"><div class="t-dot" style="background:#23DBCD"></div><span class="t-name editable" onclick="inlineEdit(this)">Clientes</span><span class="t-h" id="th1">1.0 h</span><span class="t-pct" id="tp1">27%</span></div>
+        <div class="tiempo-row"><div class="t-dot" style="background:#FE9D18"></div><span class="t-name editable" onclick="inlineEdit(this)">Análisis</span><span class="t-h" id="th2">0.5 h</span><span class="t-pct" id="tp2">13%</span></div>
+        <div class="tiempo-row"><div class="t-dot" style="background:#F154B0"></div><span class="t-name editable" onclick="inlineEdit(this)">Comunicación</span><span class="t-h" id="th3">0.5 h</span><span class="t-pct" id="tp3">13%</span></div>
+        <div class="tiempo-row"><div class="t-dot" style="background:#8E24AA"></div><span class="t-name editable" onclick="inlineEdit(this)">Logística</span><span class="t-h" id="th4">0.3 h</span><span class="t-pct" id="tp4">7%</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📅 <span class="editable" onclick="inlineEdit(this)">Actividad semanal</span> <span style="cursor:pointer;opacity:.4;font-size:12px" onclick="openModal('semana')">✏️</span></div>
+      <div class="prog-section">
+        <div><div class="p-label"><span class="editable" onclick="inlineEdit(this)">Lunes</span><span id="wv0" class="editable" onclick="inlineEdit(this)">7/10</span></div><div class="p-bar-bg"><div class="p-bar" id="wb0" style="width:70%;background:#FE9BD4"></div></div></div>
+        <div><div class="p-label"><span class="editable" onclick="inlineEdit(this)">Martes</span><span id="wv1" class="editable" onclick="inlineEdit(this)">9/10</span></div><div class="p-bar-bg"><div class="p-bar" id="wb1" style="width:90%;background:#FE9BD4"></div></div></div>
+        <div><div class="p-label"><span class="editable" onclick="inlineEdit(this)">Miércoles</span><span id="wv2" class="editable" onclick="inlineEdit(this)">10/10</span></div><div class="p-bar-bg"><div class="p-bar" id="wb2" style="width:100%;background:#ED0C7D"></div></div></div>
+        <div><div class="p-label"><span class="editable" onclick="inlineEdit(this)">Jueves</span><span id="wv3" class="editable" onclick="inlineEdit(this)">6/10</span></div><div class="p-bar-bg"><div class="p-bar" id="wb3" style="width:60%;background:#FFE2CF"></div></div></div>
+        <div><div class="p-label"><span class="editable" onclick="inlineEdit(this)">Viernes</span><span id="wv4" class="editable" onclick="inlineEdit(this)">0/10</span></div><div class="p-bar-bg"><div class="p-bar" id="wb4" style="width:0%;background:#23DBCD"></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom:1.25rem">
+  <div class="card-title">📈 <span class="editable" onclick="inlineEdit(this)">Análisis de tiempo por actividad</span></div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab(0)">Por actividad</button>
+    <button class="tab" onclick="switchTab(1)">Por grupo</button>
+    <button class="tab" onclick="switchTab(2)">Semana</button>
+  </div>
+  <div id="cp0" class="chart-wrap"><canvas id="chart0" height="170"></canvas></div>
+  <div id="cp1" class="chart-wrap" style="display:none"><canvas id="chart1" height="170"></canvas><div class="legend-row" id="donut-legend"></div></div>
+  <div id="cp2" class="chart-wrap" style="display:none"><canvas id="chart2" height="170"></canvas></div>
+</div>
+
+<div class="grid3">
+  <div class="card">
+    <div class="card-title">⏱ Mayor tiempo estimado</div>
+    <div id="top-tasks" style="display:flex;flex-direction:column;gap:7px"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">✅ Tiempo completado</div>
+    <div style="text-align:center;padding:.4rem 0">
+      <div style="font-size:30px;font-weight:700;color:#ED0C7D" id="done-mins-val">0</div>
+      <div style="font-size:11px;color:#aaa;margin-top:2px">min completados</div>
+      <div style="margin-top:.65rem"><div class="p-bar-bg"><div class="p-bar" id="done-bar" style="width:0%;background:#ED0C7D;height:8px;border-radius:4px"></div></div><div style="font-size:11px;color:#aaa;margin-top:3px" id="done-pct-label">0% del día completado</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">⏳ Pendiente por grupo</div>
+    <div style="padding:.4rem 0;display:flex;flex-direction:column;gap:5px" id="cat-summary"></div>
+  </div>
+</div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<div class="modal-bg" id="modal-bg" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h3 id="modal-title">Editar</h3>
+    <div id="modal-fields"></div>
+    <div class="mbtns" id="modal-btns">
+      <button class="btn-c" onclick="closeModal()">Cancelar</button>
+      <button class="btn-s" onclick="saveModal()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+var palHex=['#ED0C7D','#F154B0','#FE9BD4','#FFE3F4','#FE9D18','#FFE2CF','#23DBCD','#B7EDE4','#00897C'];
+var palNames=['Flamingo pink','Barbie girlz','Girly pop','Daydream','Dunedin orange','Creamsicle','Gulfwater','Salt air','High tide'];
+var curAcc='#ED0C7D';
+var catColors={analisis:'#FE9D18',operaciones:'#ED0C7D',logistica:'#8E24AA',clientes:'#23DBCD',comunicacion:'#F154B0'};
+var catBg={analisis:'#FFE2CF',operaciones:'#FE9BD4',logistica:'#E1BEE7',clientes:'#B7EDE4',comunicacion:'#FFE3F4'};
+var catTc={analisis:'#8B4000',operaciones:'#7A0040',logistica:'#4A148C',clientes:'#005048',comunicacion:'#A3005A'};
+var chart0=null,chart1=null,chart2=null;
+var curEdit={type:null};
+var pomWork=25,pomBreak=5,pomSessions=4,pomRunning=false,pomInterval=null,pomSec=25*60,pomCurSess=1,pomIsWork=true,circ=188.5;
+
+function applyPal(i){
+  document.querySelectorAll('.pal-sw').forEach((s,j)=>s.classList.toggle('active',i===j));
+  curAcc=palHex[i];
+  document.getElementById('pal-cur-name').textContent=palNames[i];
+  document.getElementById('pom-arc').style.stroke=curAcc;
+  document.getElementById('done-bar').style.background=curAcc;
+  document.getElementById('done-mins-val').style.color=curAcc;
+  rebuildCharts();
+}
+
+function inlineEdit(el){
+  if(el.querySelector('input'))return;
+  var old=el.textContent;
+  var inp=document.createElement('input');
+  inp.className='inline-edit';inp.value=old;
+  inp.style.width=(Math.max(old.length,4)*8)+'px';
+  el.textContent='';el.appendChild(inp);inp.focus();inp.select();
+  function done(){
+    var v=inp.value.trim()||old;el.textContent=v;
+    var id=el.id;
+    if(id&&id.startsWith('wv')){
+      var idx=parseInt(id[2]);
+      var p=v.split('/');var pc=p[1]?Math.round(parseInt(p[0])/parseInt(p[1])*100):0;
+      document.getElementById('wb'+idx).style.width=pc+'%';
+    }
+    rebuildCharts();
+  }
+  inp.addEventListener('blur',done);
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key==='Escape')inp.blur();});
+}
+
+function toggle(el){
+  var was=el.dataset.done==='1';el.dataset.done=was?'0':'1';
+  var c=el.querySelector('.task-check');
+  if(was){el.classList.remove('done');c.classList.remove('ok');c.innerHTML='';}
+  else{el.classList.add('done');c.classList.add('ok');c.innerHTML='✓';}
+  updateMeta();rebuildCharts();
+}
+
+function updateMeta(){
+  var items=document.querySelectorAll('.task-item');
+  var total=items.length,done=[...items].filter(i=>i.dataset.done==='1').length;
+  document.getElementById('mv0').textContent=done;
+  document.getElementById('ms0').textContent='de '+total+' actividades';
+  var pct=total?Math.round(done/total*100):0;
+  document.getElementById('mv2').textContent=pct+'%';
+  var dm=[...items].filter(i=>i.dataset.done==='1').reduce((a,i)=>a+(parseInt(i.dataset.mins)||0),0);
+  document.getElementById('mv1').textContent=(dm/60).toFixed(1)+' h';
+  var wv4=document.getElementById('wv4');
+  if(wv4&&!wv4.querySelector('input'))wv4.textContent=done+'/'+total;
+  document.getElementById('wb4').style.width=pct+'%';
+}
+
+function addTask(){
+  var inp=document.getElementById('new-task'),v=inp.value.trim();if(!v)return;
+  var d=document.createElement('div');
+  d.className='task-item';d.dataset.done='0';d.dataset.mins='20';d.dataset.cat='operaciones';
+  d.innerHTML=`<div class="task-check" onclick="toggle(this.parentElement)"></div><span class="editable" onclick="inlineEdit(this)">${v}</span><span class="task-mins editable" onclick="inlineEdit(this)">20 min</span><div class="task-actions"><span class="tag" style="background:#FE9BD4;color:#7A0040">operaciones</span></div>`;
+  document.getElementById('task-list').appendChild(d);inp.value='';updateMeta();rebuildCharts();
+}
+
+function openModal(type){
+  curEdit={type};
+  var f=document.getElementById('modal-fields'),t=document.getElementById('modal-title');
+  f.innerHTML='';
+  document.getElementById('modal-btns').innerHTML='<button class="btn-c" onclick="closeModal()">Cancelar</button><button class="btn-s" onclick="saveModal()">Guardar</button>';
+  if(type==='tiempo'){
+    t.textContent='Editar tiempo por grupo';
+    ['Operaciones','Clientes','Análisis','Comunicación','Logística'].forEach((r,i)=>{
+      f.innerHTML+=`<div class="field"><label>${r} (horas)</label><input id="ef-t${i}" value="${document.getElementById('th'+i).textContent.replace(' h','')}"></div>`;
+    });
+  } else if(type==='semana'){
+    t.textContent='Editar actividad semanal';
+    ['Lunes','Martes','Miércoles','Jueves','Viernes'].forEach((d,i)=>{
+      f.innerHTML+=`<div class="field"><label>${d} (completadas/total)</label><input id="ef-w${i}" value="${document.getElementById('wv'+i).textContent}"></div>`;
+    });
+  } else if(type==='pomodoro'){
+    t.textContent='Configurar Pomodoro';
+    f.innerHTML=`<div class="field"><label>Minutos de trabajo</label><input id="ef-pw" type="number" value="${pomWork}"></div><div class="field"><label>Minutos de descanso</label><input id="ef-pb" type="number" value="${pomBreak}"></div><div class="field"><label>Sesiones</label><input id="ef-ps" type="number" value="${pomSessions}"></div>`;
+  }
+  document.getElementById('modal-bg').classList.add('open');
+}
+
+function closeModal(e){if(!e||e.target===document.getElementById('modal-bg'))document.getElementById('modal-bg').classList.remove('open');}
+
+function saveModal(){
+  var type=curEdit.type;
+  if(type==='tiempo'){
+    var hrs=[0,1,2,3,4].map(i=>parseFloat(document.getElementById('ef-t'+i).value)||0);
+    var tot=hrs.reduce((a,b)=>a+b,0)||1;
+    hrs.forEach((h,i)=>{document.getElementById('th'+i).textContent=h.toFixed(1)+' h';document.getElementById('tp'+i).textContent=Math.round(h/tot*100)+'%';});
+    rebuildCharts();
+  } else if(type==='semana'){
+    for(var i=0;i<5;i++){
+      var v=document.getElementById('ef-w'+i).value;
+      document.getElementById('wv'+i).textContent=v;
+      var p=v.split('/');var pc=p[1]?Math.round(parseInt(p[0])/parseInt(p[1])*100):0;
+      document.getElementById('wb'+i).style.width=pc+'%';
+    }
+  } else if(type==='pomodoro'){
+    pomWork=parseInt(document.getElementById('ef-pw').value)||25;
+    pomBreak=parseInt(document.getElementById('ef-pb').value)||5;
+    pomSessions=parseInt(document.getElementById('ef-ps').value)||4;
+    pomReset();
+  }
+  document.getElementById('modal-bg').classList.remove('open');
+}
+
+function getTasks(){
+  return [...document.querySelectorAll('.task-item')].map(el=>({
+    name:el.querySelector('span.editable').textContent,
+    mins:parseInt(el.querySelector('.task-mins').textContent)||0,
+    done:el.dataset.done==='1',
+    cat:el.dataset.cat||'operaciones'
+  }));
+}
+
+function rebuildCharts(){
+  var tasks=getTasks();
+  var tc='#aaa';
+  var baseOpts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#fff',titleColor:'#333',bodyColor:'#666',borderColor:'#eee',borderWidth:1}},scales:{x:{ticks:{color:tc,font:{size:10}},grid:{display:false}},y:{ticks:{color:tc,font:{size:10}},grid:{color:'rgba(200,200,200,.2)'}}}};
+  if(chart0)chart0.destroy();
+  chart0=new Chart(document.getElementById('chart0').getContext('2d'),{type:'bar',data:{labels:tasks.map(t=>t.name.length>13?t.name.slice(0,13)+'…':t.name),datasets:[{data:tasks.map(t=>t.mins),backgroundColor:tasks.map(t=>t.done?curAcc:catBg[t.cat]||'#FFE3F4'),borderRadius:5,borderSkipped:false}]},options:{...baseOpts,plugins:{...baseOpts.plugins,tooltip:{...baseOpts.plugins.tooltip,callbacks:{label:c=>c.parsed.y+' min'}}}}});
+  if(chart1)chart1.destroy();
+  var cats={};tasks.forEach(t=>{if(!cats[t.cat])cats[t.cat]=0;cats[t.cat]+=t.mins;});
+  var ck=Object.keys(cats),cv=ck.map(k=>cats[k]),cc=ck.map(k=>catColors[k]||'#FE9BD4');
+  chart1=new Chart(document.getElementById('chart1').getContext('2d'),{type:'doughnut',data:{labels:ck,datasets:[{data:cv,backgroundColor:cc,borderWidth:2,borderColor:'#fff',hoverOffset:7}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.label+': '+c.parsed+' min'}}}}});
+  document.getElementById('donut-legend').innerHTML=ck.map((k,i)=>`<div class="legend-item"><div class="legend-dot" style="background:${cc[i]}"></div>${k}: ${cv[i]} min</div>`).join('');
+  if(chart2)chart2.destroy();
+  var days=['Lun','Mar','Mié','Jue','Vie'];
+  var wd=[7,9,10,6,tasks.filter(t=>t.done).length];
+  var wt=[10,10,10,10,tasks.length];
+  chart2=new Chart(document.getElementById('chart2').getContext('2d'),{type:'bar',data:{labels:days,datasets:[{label:'Completadas',data:wd,backgroundColor:curAcc,borderRadius:4,borderSkipped:false},{label:'Pendientes',data:wt.map((t,i)=>t-wd[i]),backgroundColor:'#FFE3F4',borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:tc,font:{size:10},boxWidth:9,padding:10}},tooltip:{mode:'index',intersect:false}},scales:{x:{stacked:true,ticks:{color:tc,font:{size:10}},grid:{display:false}},y:{stacked:true,ticks:{color:tc,font:{size:10},stepSize:2},grid:{color:'rgba(200,200,200,.2)'}}}}});
+  var dm=tasks.filter(t=>t.done).reduce((a,t)=>a+t.mins,0);
+  var pm=tasks.filter(t=>!t.done).reduce((a,t)=>a+t.mins,0);
+  var tot=dm+pm||1;var pct=Math.round(dm/tot*100);
+  document.getElementById('done-mins-val').textContent=dm;
+  document.getElementById('done-bar').style.width=pct+'%';
+  document.getElementById('done-pct-label').textContent=pct+'% del día completado';
+  var sorted=[...tasks].sort((a,b)=>b.mins-a.mins).slice(0,3);
+  document.getElementById('top-tasks').innerHTML=sorted.map(t=>`<div style="display:flex;align-items:center;gap:8px;font-size:12px"><div class="p-bar-bg" style="flex:1"><div class="p-bar" style="width:${Math.round(t.mins/sorted[0].mins*100)}%;background:${catColors[t.cat]||'#ED0C7D'}"></div></div><span style="font-size:11px;min-width:60px;text-align:right;flex-shrink:0">${t.name.slice(0,12)}… ${t.mins}m</span></div>`).join('');
+  var cs={};tasks.filter(t=>!t.done).forEach(t=>{if(!cs[t.cat])cs[t.cat]=0;cs[t.cat]+=t.mins;});
+  document.getElementById('cat-summary').innerHTML=Object.entries(cs).map(([k,v])=>`<div style="display:flex;justify-content:space-between;align-items:center;font-size:11px"><span style="padding:1px 7px;border-radius:20px;background:${catBg[k]||'#FE9BD4'};color:${catTc[k]||'#7A0040'}">${k}</span><span style="font-weight:600">${v} min</span></div>`).join('');
+  updateMeta();
+}
+
+function switchTab(i){document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',i===j));for(var k=0;k<3;k++)document.getElementById('cp'+k).style.display=k===i?'block':'none';}
+
+function pomDisplay(){var m=Math.floor(pomSec/60),s=pomSec%60;document.getElementById('pom-display').textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;var total=(pomIsWork?pomWork:pomBreak)*60;document.getElementById('pom-arc').style.strokeDashoffset=circ*(1-pomSec/total);}
+function pomTick(){if(pomSec>0){pomSec--;pomDisplay();}else{pomRunning=false;clearInterval(pomInterval);pomInterval=null;document.getElementById('pom-btn').textContent='▶ Iniciar';if(pomIsWork){pomIsWork=false;pomSec=pomBreak*60;document.getElementById('pom-badge').textContent='Descanso';document.getElementById('pom-badge').style.background='#B7EDE4';document.getElementById('pom-badge').style.color='#005048';}else{pomIsWork=true;pomCurSess=Math.min(pomCurSess+1,pomSessions);pomSec=pomWork*60;document.getElementById('pom-badge').textContent='Trabajo';document.getElementById('pom-badge').style.background='#FFE3F4';document.getElementById('pom-badge').style.color='#A3005A';}document.getElementById('pom-sess').textContent='Sesión '+pomCurSess+' de '+pomSessions;pomDisplay();}}
+function pomToggle(){if(pomRunning){clearInterval(pomInterval);pomInterval=null;pomRunning=false;document.getElementById('pom-btn').textContent='▶ Continuar';}else{pomRunning=true;pomInterval=setInterval(pomTick,1000);document.getElementById('pom-btn').textContent='⏸ Pausar';}}
+function pomReset(){clearInterval(pomInterval);pomInterval=null;pomRunning=false;pomSec=pomWork*60;pomCurSess=1;pomIsWork=true;document.getElementById('pom-btn').textContent='▶ Iniciar';document.getElementById('pom-badge').textContent='Trabajo';document.getElementById('pom-badge').style.background='#FFE3F4';document.getElementById('pom-badge').style.color='#A3005A';document.getElementById('pom-sess').textContent='Sesión 1 de '+pomSessions;pomDisplay();}
+pomDisplay();
+setTimeout(rebuildCharts,200);
+</script>
+</body>
+</html>
